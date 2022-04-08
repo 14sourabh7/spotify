@@ -1,0 +1,30 @@
+<a href="/" class="btn ">home</a>
+<a href="/spotify/profile" class="btn">profile</a>
+<hr>
+<h1><?php echo $name; ?></h1>
+<hr>
+<div class="row">
+    <?php
+    foreach ($list as $key => $value) {
+
+    ?>
+
+        <div class="col-md-4">
+            <div class="card" style="width: 18rem;">
+                <img src="<?php echo $value['track']['album']['images'][1]['url'];  ?>" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold"><?php echo $value['track']['name'];  ?></h5>
+                    <h6 class="card-subtitle mb-2 text-muted"><?php echo $value['track']['artists'][0]['name'];  ?></h6>
+                    <form action="" method="post">
+                        <input type="hidden" name="trackid" value="<?php echo $value['track']['uri'] ?>">
+                        <button class='btn' type="submit">
+                            remove
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    <?php }
+    ?>
+</div>

@@ -1,0 +1,195 @@
+<a href="/" class="btn ">home</a>
+<a href="/spotify/profile" class="btn">profile</a>
+<hr>
+<div class="col-lg-12 text-center mt-5">
+    <h1>Search for your favorite music</h1>
+</div>
+<div class="col-md-4 offset-md-4 mt-5 border border-success pt-3">
+    <div class="input-group mb-3">
+        <form action="/spotify/search" method="get">
+
+
+            <div class="input-group-append">
+                <input type="text" name='q' class="form-control" placeholder="Search ......" aria-label="Recipient's username" required>
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="album" name='filter'>
+                <label class="form-check-label" for="filter">
+                    album
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="artist" name='artist'>
+                <label class="form-check-label" for="filter">
+                    artist
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="playlist" name='playlist'>
+                <label class="form-check-label" for="filter">
+                    playlist
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="track" name='track'>
+                <label class="form-check-label" for="filter">
+                    track
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="show" name='show'>
+                <label class="form-check-label" for="filter">
+                    show
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="episode" name='episode'>
+                <label class="form-check-label" for="filter">
+                    episode
+                </label>
+            </div>
+        </form>
+
+
+    </div>
+</div>
+<hr>
+<div class="container mx-auto mt-4">
+
+
+    <?php foreach ($response as $key => $value) {
+    ?><h1 class="mt-4 "><?php echo $key; ?></h1>
+        <hr>
+        <div class="row">
+            <?php
+            foreach ($value['items'] as $k => $v) {
+
+                if ($key == 'tracks') {
+
+            ?>
+                    <div class="col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <img src="<?php echo $v['album']['images'][1]['url'];  ?>" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold"><?php echo $v['name'];  ?></h5>
+                                <h6 class="card-subtitle mb-2 text-muted"><?php echo $v['artists'][0]['name'];  ?></h6>
+
+                                <form action="/spotify/addtrack" method="get">
+                                    <select name="playlist">
+                                        <?php foreach ($playlist['items'] as $p => $t) { ?>
+
+                                            <option name='playlist' value="<?php echo $t['id'] ?>">
+                                                <?php echo $t['name'] ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                    <input type="hidden" name="track" value="<?php echo $v['uri']; ?>">
+                                    <button type="submit" class="btn btn-primary">add to playlist</button>
+                                </form>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                <?php
+                }
+
+                if ($key == 'albums') {
+
+                ?>
+
+                    <div class="col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <img src="<?php echo $v['images'][1]['url'];  ?>" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold"><?php echo $v['name'];  ?></h5>
+                                <h6 class="card-subtitle mb-2 text-muted"><?php echo $v['artists'][0]['name'];  ?></h6>
+                                <a href="<?php echo $v["external_urls"]["spotify"] ?>" target="_blank" class="btn"><i class="fab fa-github"></i> View More </a>
+                            </div>
+                        </div>
+                    </div>
+                <?php }
+
+                if ($key == 'artists') {
+                ?>
+
+                    <div class="col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <img src="<?php echo $v['images'][1]['url'];  ?>" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold"><?php echo $v['name'];  ?></h5>
+                                <p class="card-subtitle mb-2 text-muted">genres - <?php foreach ($v['genres'] as $g => $gv) {
+                                                                                        echo $gv . ", ";
+                                                                                    } ?></p>
+                                <p>popularity - <?php echo $v['popularity']; ?> </p>
+                                <p>followers - <?php echo $v['followers']['total'] ?></p>
+                                <a href="<?php echo $v["external_urls"]["spotify"] ?>" target="_blank" class="btn">view more </a>
+                            </div>
+                        </div>
+                    </div>
+
+                <?php
+                }
+                ?>
+                <?php
+                if ($key == 'playlists') {
+                ?>
+                    <div class="col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <img src="<?php echo $v['images'][1]['url'];  ?>" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold"><?php echo $v['name'];  ?></h5>
+                                <p class="card-subtitle mb-2 text-muted">owner - <?php echo $v['owner']['display_name']; ?></p>
+                                <h4>Total tracks - <?php echo $v['tracks']['total'] ?></h4>
+                                <a href="<?php echo $v["external_urls"]["spotify"] ?>" target="_blank" class="btn">view</a>
+                            </div>
+                        </div>
+                    </div>
+
+                <?php
+                }
+                if ($key == 'episodes') { ?>
+
+                    <div class="col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <img src="<?php echo $v['images'][1]['url'];  ?>" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold"><?php echo $v['name'];  ?></h5>
+                                <p class="card-subtitle mb-2 text-muted">release_date - <?php echo $v["release_date"]; ?></p>
+                                <a href="<?php echo $v["audio_preview_url"] ?>" target="_blank" class="btn"> audio_preview</a>
+                                <a href="<?php echo $v["external_urls"]["spotify"] ?>" target="_blank" class="btn">ADD</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php } ?><?php
+                                if ($key == 'shows') { ?>
+
+                    <div class="col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <img src="<?php echo $v['images'][1]['url'];  ?>" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold"><?php echo $v['name'];  ?></h5>
+                                <p class="card-subtitle mb-2 text-muted">total episodes - <?php echo $v["total_episodes"]; ?></p>
+                                <p> publisher - <?php echo $v['publisher'] ?></p>
+                                <a href="<?php echo $v["external_urls"]["spotify"] ?>" target="_blank" class="btn">ADD</a>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
+
+
+        <?php
+            }
+            echo " </div>";
+        }
+        ?>
+
+
+
+
+
+        </div>
+        </body>
