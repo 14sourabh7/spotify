@@ -77,6 +77,13 @@ class Spotify extends injectable
 
 
 
+    /**
+     * function to handle all the post requests
+     *
+     * @param [type] $url
+     * @param [type] $body
+     * @return void
+     */
     private function postResponse($url, $body)
     {
         //common request url for all type of operations from api
@@ -92,6 +99,14 @@ class Spotify extends injectable
         return $data;
     }
 
+
+    /**
+     * function to delete track
+     *
+     * @param [type] $url
+     * @param [type] $body
+     * @return void
+     */
     private function deleteResponse($url, $body)
     {
         //common request url for all type of operations from api
@@ -128,6 +143,14 @@ class Spotify extends injectable
         return $result;
     }
 
+
+    /**
+     * public function to call postresponse for creating playlist
+     *
+     * @param [type] $playlist
+     * @param [type] $id
+     * @return void
+     */
     public function createPlaylist($playlist, $id)
     {
         $body = array(
@@ -142,6 +165,14 @@ class Spotify extends injectable
         return $result;
     }
 
+
+    /**
+     * public function calling post function to add track
+     *
+     * @param [type] $url
+     * @param [type] $track
+     * @return void
+     */
     public function addTrack($url, $track)
     {
         $body = array("uris" => array($track));
@@ -149,6 +180,14 @@ class Spotify extends injectable
         $result = $this->postResponse($url, $body);
         return $result;
     }
+
+    /**
+     * function calling class private function for deleting track
+     *
+     * @param [type] $url
+     * @param [type] $track
+     * @return void
+     */
     public function deleteTrack($url, $track)
     {
         $body = array("uris" => array($track));
