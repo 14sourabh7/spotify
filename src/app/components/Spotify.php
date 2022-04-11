@@ -86,17 +86,26 @@ class Spotify extends injectable
      */
     private function postResponse($url, $body)
     {
-        //common request url for all type of operations from api
-        $response = $this->client->request(
-            'POST',
-            $url,
-            ['body' => json_encode($body)]
-        );
+        $eventManager = $this->di->get('EventsManager');
+        try {
+            //common request url for all type of operations from api
+            $response = $this->client->request(
+                'POST',
+                $url,
+                ['body' => json_encode($body)]
+            );
 
-        $body = $response->getBody();
-        $data = json_decode($body, true);
+            $body = $response->getBody();
+            $data = json_decode($body, true);
 
-        return $data;
+            return $data;
+        } catch (ClientException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            echo Psr7\Message::toString($e->getResponse());
+            $this->session->set('uri', $_SERVER['REQUEST_URI']);
+            $eventManager->fire('api:access', $this);
+            // die;
+        }
     }
 
 
@@ -109,17 +118,25 @@ class Spotify extends injectable
      */
     private function deleteResponse($url, $body)
     {
-        //common request url for all type of operations from api
-        $response = $this->client->request(
-            'DELETE',
-            $url,
-            ['body' => json_encode($body)]
-        );
+        $eventManager = $this->di->get('EventsManager');
+        try { //common request url for all type of operations from api
+            $response = $this->client->request(
+                'DELETE',
+                $url,
+                ['body' => json_encode($body)]
+            );
 
-        $body = $response->getBody();
-        $data = json_decode($body, true);
+            $body = $response->getBody();
+            $data = json_decode($body, true);
 
-        return $data;
+            return $data;
+        } catch (ClientException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            echo Psr7\Message::toString($e->getResponse());
+            $this->session->set('uri', $_SERVER['REQUEST_URI']);
+            $eventManager->fire('api:access', $this);
+            // die;
+        }
     }
 
 
@@ -135,12 +152,20 @@ class Spotify extends injectable
      */
     public function getDetails($url)
     {
+        $eventManager = $this->di->get('EventsManager');
+        try {
+            //calling  class private function to get response
+            $result = $this->getResponse($url);
 
-        //calling  class private function to get response
-        $result = $this->getResponse($url);
 
-
-        return $result;
+            return $result;
+        } catch (ClientException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            echo Psr7\Message::toString($e->getResponse());
+            $this->session->set('uri', $_SERVER['REQUEST_URI']);
+            $eventManager->fire('api:access', $this);
+            // die;
+        }
     }
 
 
@@ -153,16 +178,25 @@ class Spotify extends injectable
      */
     public function createPlaylist($playlist, $id)
     {
-        $body = array(
-            "name" => $playlist,
-            "description" => $playlist,
-            "public" => false
-        );
+        $eventManager = $this->di->get('EventsManager');
+        try {
+            $body = array(
+                "name" => $playlist,
+                "description" => $playlist,
+                "public" => false
+            );
 
-        $url = "users/$id/playlists";
-        //calling  class private function to post 
-        $result = $this->postResponse($url, $body);
-        return $result;
+            $url = "users/$id/playlists";
+            //calling  class private function to post 
+            $result = $this->postResponse($url, $body);
+            return $result;
+        } catch (ClientException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            echo Psr7\Message::toString($e->getResponse());
+            $this->session->set('uri', $_SERVER['REQUEST_URI']);
+            $eventManager->fire('api:access', $this);
+            // die;
+        }
     }
 
 
@@ -175,10 +209,19 @@ class Spotify extends injectable
      */
     public function addTrack($url, $track)
     {
-        $body = array("uris" => array($track));
-        //calling  class private function to post 
-        $result = $this->postResponse($url, $body);
-        return $result;
+        $eventManager = $this->di->get('EventsManager');
+        try {
+            $body = array("uris" => array($track));
+            //calling  class private function to post 
+            $result = $this->postResponse($url, $body);
+            return $result;
+        } catch (ClientException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            echo Psr7\Message::toString($e->getResponse());
+            $this->session->set('uri', $_SERVER['REQUEST_URI']);
+            $eventManager->fire('api:access', $this);
+            // die;
+        }
     }
 
     /**
@@ -190,9 +233,18 @@ class Spotify extends injectable
      */
     public function deleteTrack($url, $track)
     {
-        $body = array("uris" => array($track));
-        //calling  class private function to delete
-        $result = $this->deleteResponse($url, $body);
-        return $result;
+        $eventManager = $this->di->get('EventsManager');
+        try {
+            $body = array("uris" => array($track));
+            //calling  class private function to delete
+            $result = $this->deleteResponse($url, $body);
+            return $result;
+        } catch (ClientException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            echo Psr7\Message::toString($e->getResponse());
+            $this->session->set('uri', $this->request->get('_url'));
+            $eventManager->fire('api:access', $this);
+            // die;
+        }
     }
 }

@@ -4,11 +4,9 @@ namespace App\Handler;
 
 use Users;
 use Phalcon\Di\Injectable;
-use GuzzleHttp\Client;
 
 class EventHandler extends injectable
 {
-
 
 
     public function access()
@@ -21,10 +19,7 @@ class EventHandler extends injectable
             'grant_type'   => 'refresh_token',
             'refresh_token'         => $user->refresh_token,
         );
-
-
-
-        $ch  = curl_init();
+        $ch            = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://accounts.spotify.com/api/token');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
