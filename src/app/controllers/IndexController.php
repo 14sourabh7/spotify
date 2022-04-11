@@ -11,12 +11,20 @@ class IndexController extends Controller
     {
 
         //redirection to search page
-        $this->response->redirect('/spotify');
+
+        if ($this->session->get('login')) {
+            $this->response->redirect('/spotify');
+        } else {
+            $this->response->redirect('/user');
+        }
     }
 
 
     public function apiAction()
     {
+        if (!$this->session->get('login')) {
+            $this->response->redirect('/user');
+        };
         //redirection to search page
         $url = "https://accounts.spotify.com/authorize?";
 
@@ -52,10 +60,10 @@ class IndexController extends Controller
             $result = json_decode(curl_exec($ch));
 
             $this->session->set('key', $result->access_token);
-            $user = Users::findFirst("user_id = '" . $this->session->get('user_id') . "'");
+            $user = Users::find("user_id = '" . $this->session->get('user_id') . "'")[0];
             $user->token = $result->access_token;
             $user->refresh_token = $result->refresh_token;
-            $dbresult = $user->save();
+            $dbresult = $user->update();
             if ($dbresult)
                 $this->response->redirect("/");
         }

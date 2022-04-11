@@ -15,8 +15,9 @@ class Spotify extends injectable
 
     public function __construct()
     {
-        $user = Users::findFirst($this->session->get('user_id'));
-        $this->key = $user->token;
+        $user = Users::find($this->session->get('user_id'))[0];
+        if ($user)
+            $this->key =     $user->token;
 
         $this->client = $this->setClient();
     }
@@ -42,6 +43,7 @@ class Spotify extends injectable
     }
 
 
+
     /**
      * getResponse($action, $city)
      * 
@@ -53,7 +55,7 @@ class Spotify extends injectable
      */
     private function getResponse($url)
     {
-
+        $eventManager = $this->di->get('EventsManager');
         try {
             //common request url for all type of operations from api
             $response = $this->client->request(
@@ -65,8 +67,11 @@ class Spotify extends injectable
             $data = json_decode($body, true);
             return $data;
         } catch (ClientException $e) {
-            $eventManager = $this->di->get('EventsManager');
+            echo Psr7\Message::toString($e->getRequest());
+            echo Psr7\Message::toString($e->getResponse());
+            $this->session->set('uri', $_SERVER['REQUEST_URI']);
             $eventManager->fire('api:access', $this);
+            // die;
         }
     }
 

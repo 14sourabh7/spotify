@@ -7,6 +7,9 @@ class SpotifyController extends Controller
 {
     public function indexAction()
     {
+        if (!$this->session->get('login')) {
+            $this->response->redirect('/user');
+        };
     }
 
     /**
@@ -18,6 +21,9 @@ class SpotifyController extends Controller
      */
     public function searchAction()
     {
+        if (!$this->session->get('login')) {
+            $this->response->redirect('/user');
+        };
 
         $inputs = $this->request->get();
         $url = "";
@@ -52,40 +58,33 @@ class SpotifyController extends Controller
 
 
     /**
-     * detailsAction()
-     * 
-     * action to show location details
+     * action to add tracks to playlist
      *
      * @return void
      */
-    public function profileAction()
-    {
-        $user =
-            $this->spotify->getDetails('me');
-        $this->view->user = $user;
-        $this->view->playlists = $this->spotify->getDetails('me/playlists');
-
-        $input = $this->request->get('playlist');
-        if ($input) {
-            $result =  $this->spotify->createPlaylist($input, $user['id']);
-            if ($result) {
-                $this->response->redirect('/spotify/profile');
-            }
-        }
-    }
-
     public function addtrackAction()
     {
         $inputs = $this->request->get();
+        print_r($inputs);
         $url = "playlists/" . $inputs['playlist'] . "/tracks";
 
         $result = $this->spotify->addTrack($url, urldecode($inputs['track']));
         if ($result) {
-            $this->response->redirect('/spotify/profile');
+            $this->response->redirect($this->request->get("/user/dashboard"));
         }
     }
+
+
+
+    /**
+     * action to display playlists 
+     * */
     public function playlistAction()
     {
+        if (!$this->session->get('login')) {
+            $this->response->redirect('/user');
+        };
+
         $playlistId = $this->request->get('id');
         $trackid = $this->request->getPost('trackid');
 
@@ -102,7 +101,8 @@ class SpotifyController extends Controller
             $track = urldecode($trackid);
             $result = $this->spotify->deleteTrack($url, $track);
             if ($result) {
-                $this->response->redirect('/spotify/profile');
+
+                $this->response->redirect($this->request->get('/user/dashboard'));
             }
         }
     }
