@@ -4,6 +4,10 @@ namespace App\Components;
 
 use Phalcon\Di\Injectable;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\ClientException;
+
+use Users;
 
 class Spotify extends injectable
 {
@@ -13,7 +17,9 @@ class Spotify extends injectable
     public function __construct()
     {
 
-        $this->key = $this->session->get('key');
+        $user = Users::findFirst(4);
+        if ($user)
+            $this->key = $user->token;
 
         $this->client = $this->setClient();
     }
@@ -50,16 +56,21 @@ class Spotify extends injectable
      */
     private function getResponse($url)
     {
-        //common request url for all type of operations from api
-        $response = $this->client->request(
-            'GET',
-            $url
-        );
 
-        $body = $response->getBody();
-        $data = json_decode($body, true);
+        try {
+            //common request url for all type of operations from api
+            $response = $this->client->request(
+                'GET',
+                $url
+            );
 
-        return $data;
+            $body = $response->getBody();
+            $data = json_decode($body, true);
+
+            return $data;
+        } catch (ClientException $e) {
+            $this->response->redirect('/index/refresh');
+        }
     }
 
 
