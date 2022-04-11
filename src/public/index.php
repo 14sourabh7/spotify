@@ -7,7 +7,7 @@ use Phalcon\Mvc\Application;
 use Phalcon\Url;
 use Phalcon\Config\ConfigFactory;
 use Phalcon\Http\Response;
-
+use Phalcon\Db\Adapter\Pdo\Mysql;
 use Phalcon\Session\Manager as SessionManager;
 use Phalcon\Session\Adapter\Stream;
 
@@ -27,6 +27,7 @@ $loader = new Loader();
 $loader->registerDirs(
     [
         APP_PATH . "/controllers/",
+        APP_PATH . "/models/",
     ]
 );
 
@@ -101,6 +102,23 @@ $container->set(
         return $session;
     }
 );
+
+$container->set(
+    'db',
+    function () {
+        global $config;
+        return new Mysql(
+            [
+                'host'  => $config->db->host,
+                'username' => $config->db->username,
+                'password' => $config->db->password,
+                'dbname'   => $config->db->dbname,
+            ]
+        );
+    }
+);
+
+
 
 //di for api helper location class
 $container->set('spotify', new \App\Components\Spotify());
