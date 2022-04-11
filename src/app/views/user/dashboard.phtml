@@ -1,0 +1,36 @@
+<a href="/" class="btn ">home</a>
+<a href="/spotify/profile" class="btn">profile</a>
+<a href="/user/logout" class="btn">logout</a>
+<hr>
+
+
+
+<div class="container mx-auto mt-4">
+
+    <div class="row">
+        <h1>Our Recommendations..</h1>
+        <hr>
+        <?php foreach ($recommendations['tracks'] as $key => $value) {
+        ?>
+
+
+            <div class="col">
+                <div class="card" style="width: 18rem;">
+                    <img src="<?php echo $value['album']['images'][1]['url'];  ?>" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold"><?php echo $value['name'];  ?></h5>
+                        <h6 class="card-subtitle mb-2 text-muted"><?php echo $value['artists'][0]['name'];  ?></h6>
+                    </div>
+                </div>
+            </div>
+
+        <?php
+        }
+
+        ?>
+    </div>
+
+
+
+
+</div>

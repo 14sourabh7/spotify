@@ -10,6 +10,7 @@ use Phalcon\Http\Response;
 use Phalcon\Db\Adapter\Pdo\Mysql;
 use Phalcon\Session\Manager as SessionManager;
 use Phalcon\Session\Adapter\Stream;
+use Phalcon\Events\Manager;
 
 // Define some absolute path constants to aid in locating resources
 define('BASE_PATH', dirname(__DIR__));
@@ -34,6 +35,7 @@ $loader->registerDirs(
 $loader->registerNamespaces(
     [
         'App\Components' => APP_PATH . "/components",
+        'App\Handler' => APP_PATH . '/handlers'
     ]
 );
 
@@ -119,6 +121,10 @@ $container->set(
 );
 
 
+$eventsManager = new Manager();
+$application->setEventsManager($eventsManager);
+$container->set('EventsManager', $eventsManager);
+$eventsManager->attach('api', new \App\Handler\EventHandler());
 
 //di for api helper location class
 $container->set('spotify', new \App\Components\Spotify());
