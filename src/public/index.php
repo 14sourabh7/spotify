@@ -126,8 +126,12 @@ $application->setEventsManager($eventsManager);
 $container->set('EventsManager', $eventsManager);
 $eventsManager->attach('api', new \App\Handler\EventHandler());
 
-//di for api helper location class
+
+$container->set('escaper', new \App\Components\MyEscaper());
+$container->set('user', new Users());
+//di for api helper class
 $container->set('spotify', new \App\Components\Spotify());
+$container->set('auth', new \App\Components\Auth());
 
 
 

@@ -12,4 +12,26 @@ class Users extends Model
     public $password;
     public $refresh;
     public $token;
+
+    /**
+     * function to validate user
+     *
+     */
+    public function checkUser($email, $password)
+    {
+        return  Users::find("email = '" . $email . "' AND password = '" . $password . "'");
+    }
+
+    /**
+     * function to add user
+     */
+    public function addUser($name, $email, $password)
+    {
+        $user = new Users();
+        $user->name = $name;
+        $user->email = $email;
+        $user->password = $password;
+        $result = $user->save();
+        return $result;
+    }
 }

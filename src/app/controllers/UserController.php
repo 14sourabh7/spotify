@@ -11,17 +11,20 @@ class UserController extends Controller
     {
         if ($this->session->get('login')) {
             $this->response->redirect('/user/dashboard');
-        }
+        };
+
+
 
         $check = $this->request->isPost();
         if ($check) {
-            $email = $this->request->getPost('email');
-            $password = $this->request->getPost('password');
+            $email = $this->escaper->sanitize($this->request->getPost('email'));
+            $password = $this->escaper->sanitize($this->request->getPost('password'));
             if ($email && $password) {
-                $user = Users::find("email = '" . $email . "' AND password = '" . $password . "'");
+                $user = $this->user->checkUser($email, $password);
 
                 if ($user) {
-                    $token = $user->token;
+                    $token = $user[0]->token;
+
                     if ($token) {
                         $this->session->set('user_id', $user[0]->user_id);
                         $this->session->set('login', 1);
@@ -44,21 +47,16 @@ class UserController extends Controller
      */
     public function signupAction()
     {
-
-
         if ($this->session->get('login')) {
             $this->response->redirect('/user/dashboard');
-        }
+        };
+
         $check = $this->request->isPost();
         if ($check) {
-            $name = $this->request->getPost('name');
-            $email = $this->request->getPost('email');
-            $password = $this->request->getPost('password');
-            $user = new Users();
-            $user->name = $name;
-            $user->email = $email;
-            $user->password = $password;
-            $result = $user->save();
+            $name = $this->escaper->sanitize($this->request->getPost('name'));
+            $email = $this->escaper->sanitize($this->request->getPost('email'));
+            $password = $this->escaper->sanitize($this->request->getPost('password'));
+            $result = $this->user->addUser($name, $email, $password);
             if ($result) {
                 $this->response->redirect('/user');
             }
@@ -73,10 +71,7 @@ class UserController extends Controller
      */
     public function dashboardAction()
     {
-        if (!$this->session->get('login')) {
-            $this->response->redirect('/user');
-        };
-
+        $this->auth->checkLogin();
 
         //getting details from api
         $user =

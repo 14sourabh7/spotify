@@ -7,9 +7,7 @@ class SpotifyController extends Controller
 {
     public function indexAction()
     {
-        if (!$this->session->get('login')) {
-            $this->response->redirect('/user');
-        };
+        $this->auth->checkLogin();
     }
 
     /**
@@ -21,9 +19,7 @@ class SpotifyController extends Controller
      */
     public function searchAction()
     {
-        if (!$this->session->get('login')) {
-            $this->response->redirect('/user');
-        };
+        $this->auth->checkLogin();
 
         $inputs = $this->request->get();
         $url = "";
@@ -65,8 +61,7 @@ class SpotifyController extends Controller
     public function addtrackAction()
     {
         $inputs = $this->request->get();
-        print_r($inputs);
-        $url = "playlists/" . $inputs['playlist'] . "/tracks";
+        $url = "playlists/" . $this->escaper->sanitize($inputs['playlist']) . "/tracks";
 
         $result = $this->spotify->addTrack($url, urldecode($inputs['track']));
         if ($result) {
@@ -81,12 +76,10 @@ class SpotifyController extends Controller
      * */
     public function playlistAction()
     {
-        if (!$this->session->get('login')) {
-            $this->response->redirect('/user');
-        };
+        $this->auth->checkLogin();
 
-        $playlistId = $this->request->get('id');
-        $trackid = $this->request->getPost('trackid');
+        $playlistId = $this->escaper->sanitize($this->request->get('id'));
+        $trackid = $this->escaper->sanitize($this->request->getPost('trackid'));
 
         if ($playlistId) {
             $url = "playlists/" . $playlistId;

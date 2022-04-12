@@ -28,7 +28,7 @@ class Spotify extends injectable
      * 
      * function to initialze Guzzle
      *
-     * @return $client object of class Client
+     * @return object
      */
     private function setClient()
     {
@@ -82,7 +82,7 @@ class Spotify extends injectable
      *
      * @param [type] $url
      * @param [type] $body
-     * @return void
+     * @return json
      */
     private function postResponse($url, $body)
     {
@@ -114,7 +114,7 @@ class Spotify extends injectable
      *
      * @param [type] $url
      * @param [type] $body
-     * @return void
+     * @return json
      */
     private function deleteResponse($url, $body)
     {
@@ -148,7 +148,7 @@ class Spotify extends injectable
      *
      * @param [type] $action
      * @param [type] $city
-     * @return void
+     * @return json
      */
     public function getDetails($url)
     {
@@ -166,7 +166,7 @@ class Spotify extends injectable
      *
      * @param [type] $playlist
      * @param [type] $id
-     * @return void
+     * @return json
      */
     public function createPlaylist($playlist, $id)
     {
@@ -189,7 +189,7 @@ class Spotify extends injectable
      *
      * @param [type] $url
      * @param [type] $track
-     * @return void
+     * @return json
      */
     public function addTrack($url, $track)
     {
@@ -205,7 +205,7 @@ class Spotify extends injectable
      *
      * @param [type] $url
      * @param [type] $track
-     * @return void
+     * @return json
      */
     public function deleteTrack($url, $track)
     {
@@ -214,53 +214,5 @@ class Spotify extends injectable
         //calling  class private function to delete
         $result = $this->deleteResponse($url, $body);
         return $result;
-    }
-
-
-    /**
-     * function to return curl
-     */
-    public function getToken($grant, $token)
-    {
-        $data = array(
-            'redirect_uri' => 'http://localhost:8080/index/api',
-            'grant_type'   => $grant,
-            'refresh_token'  => $token,
-        );
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://accounts.spotify.com/api/token');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Basic ' . base64_encode(
-            $this->config->api->get('client_id') . ':' .
-                $this->config->api->get(
-                    'client_secret'
-                )
-        )));
-
-        $result = json_decode(curl_exec($ch));
-        return $result;
-    }
-
-    /**
-     * get authorization
-     */
-
-    public function getAuth()
-    {
-        $url = "https://accounts.spotify.com/authorize?";
-
-        $client_id = '46ca76d9be8d45bf8822165f05a987fc';
-        $client_secret = '964dd3b25c1441c4b5ee43958ec8c8d7';
-        $headers = [
-            'client_id' => $client_id,
-            'client_secret' => $client_secret,
-            'redirect_uri' => 'http://localhost:8080/index/api',
-            'scope' => 'playlist-modify-public playlist-read-private playlist-modify-private',
-            'response_type' => 'code'
-        ];
-
-        return $url . http_build_query($headers);
     }
 }
