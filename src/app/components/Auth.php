@@ -101,10 +101,11 @@ class Auth extends injectable
         $result = $this->tokenRequest($data);
 
         $this->session->set('key', $result->access_token);
-        $user = Users::find("user_id = '" . $this->session->get('user_id') . "'")[0];
-        $user->token = $result->access_token;
-        $user->refresh_token = $result->refresh_token;
-        $dbresult = $user->update();
+        $dbresult =  $this->user->addTokens(
+            $this->session->get('user_id'),
+            $result->access_token,
+            $result->refresh_token
+        );
         return $dbresult;
     }
 

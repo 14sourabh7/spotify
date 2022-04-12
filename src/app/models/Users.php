@@ -34,4 +34,18 @@ class Users extends Model
         $result = $user->save();
         return $result;
     }
+
+
+    /**
+     * adding both the tokens to db
+     *
+     */
+    public function addTokens($user, $access, $refresh)
+    {
+        $user = Users::find("user_id = '" . $user . "'")[0];
+        $user->token = $access;
+        $user->refresh_token = $refresh;
+        $dbresult = $user->update();
+        return $dbresult;
+    }
 }
