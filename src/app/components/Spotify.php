@@ -70,6 +70,7 @@ class Spotify extends injectable
         } catch (ClientException $e) {
             echo Psr7\Message::toString($e->getRequest());
             echo Psr7\Message::toString($e->getResponse());
+            die;
             $this->session->set('uri', $_SERVER['REQUEST_URI']);
             $eventManager->fire('api:access', $this);
             // die;

@@ -99,4 +99,14 @@ class SpotifyController extends Controller
             }
         }
     }
+
+    public function playerAction()
+    {
+        $devices = $this->spotify->getDetails('me/player/devices');
+        $currenttrack =
+            $this->spotify->getDetails('me/player');
+        echo '<pre>';
+        $this->view->devices = $devices['devices'];
+        $this->view->current = $currenttrack['item'];
+    }
 }

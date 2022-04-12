@@ -56,7 +56,8 @@ class Auth extends injectable
             'client_id' => $this->client_id,
             'client_secret' => $this->client_secret,
             'redirect_uri' => 'http://localhost:8080/index/api',
-            'scope' => 'playlist-modify-public playlist-read-private playlist-modify-private',
+            'scope' => 'playlist-modify-public playlist-read-private playlist-modify-private 
+            user-read-playback-state',
             'response_type' => 'code'
         ];
         return
