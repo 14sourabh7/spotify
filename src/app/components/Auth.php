@@ -32,11 +32,12 @@ class Auth extends injectable
     private function setClient()
     {
         $client = new Client([
-            // Base URI is used with relative requests
             'base_uri' => "https://accounts.spotify.com",
-            // You can set any number of default request options.
             'timeout'  => 2.0,
-            'headers' => array('Authorization' => "Basic "  . base64_encode($this->client_id . ':' . $this->client_secret), 'Content-Type' => 'application/x-www-form-urlencoded')
+            'headers' => array(
+                'Authorization' => "Basic "  . base64_encode($this->client_id . ':' . $this->client_secret),
+                'Content-Type' => 'application/x-www-form-urlencoded'
+            )
         ]);
 
         return $client;
@@ -74,7 +75,13 @@ class Auth extends injectable
     private function tokenRequest($data)
     {
         try {
-            $result =  $this->client->request('POST', "/api/token", ['body' => http_build_query($data)]);
+            $result =  $this->client->request(
+                'POST',
+                "/api/token",
+                [
+                    'body' => http_build_query($data)
+                ]
+            );
             return
                 json_decode($result->getBody());
         } catch (ClientException $e) {
@@ -118,7 +125,6 @@ class Auth extends injectable
      */
     private function refreshToken()
     {
-
         $user = Users::findFirst($this->session->get('user_id'));
 
         $data = array(

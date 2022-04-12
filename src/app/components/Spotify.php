@@ -33,11 +33,12 @@ class Spotify extends injectable
     private function setClient()
     {
         $client = new Client([
-            // Base URI is used with relative requests
             'base_uri' => $this->config->api->get('base_url'),
-            // You can set any number of default request options.
             'timeout'  => 2.0,
-            'headers' => ['Authorization' => "Bearer $this->key", 'Content-Type' => 'application/json']
+            'headers' => [
+                'Authorization' => "Bearer $this->key",
+                'Content-Type' => 'application/json'
+            ]
         ]);
         return $client;
     }
@@ -152,11 +153,8 @@ class Spotify extends injectable
      */
     public function getDetails($url)
     {
-
         //calling  class private function to get response
         $result = $this->getResponse($url);
-
-
         return $result;
     }
 
