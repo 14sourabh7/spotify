@@ -28,9 +28,9 @@ RUN set -xe && \
 
 
 
-RUN apt-get update
-RUN apt-get install -y libcurl4-openssl-dev ssh nano pkg-config libssl-dev
-RUN pecl install mongodb xdebug && docker-php-ext-enable mongodb xdebug
+# RUN apt-get update
+# RUN apt-get install -y libcurl4-openssl-dev ssh nano pkg-config libssl-dev
+# RUN pecl install mongodb xdebug && docker-php-ext-enable mongodb xdebug
 # FROM php:7.4.3-apache
 # 1. development packages
 RUN apt-get update && apt-get install -y git
